@@ -17,6 +17,7 @@ export default class Game {
 
         // create the paddle
         this.paddle = new Paddle();
+        this.input = null;
         
         // Create the back buffer canvas
         this.backBufferCanvas = document.createElement('canvas');
@@ -31,11 +32,40 @@ export default class Game {
         document.body.appendChild(this.screenBufferCanvas);
         this.screenBufferContext = this.screenBufferCanvas.getContext('2d');
 
+        // handle key events
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+        document.onkeydown = this.handleKeyDown;
+        this.handleKeyUp = this.handleKeyUp.bind(this);
+        document.onkeyup = this.handleKeyUp;
+
         // bind classes
         this.update = this.update.bind(this);
         this.render = this.render.bind(this);
         this.loop = this.loop.bind(this);
-        this.interval = setInterval(this.loop, 300);
+        this.interval = setInterval(this.loop, 30);
+    }
+    handleKeyDown(event) {
+        event.preventDefault();
+        switch(event.key) {
+          case 'a':
+          case 'd':
+          case 'ArrowLeft':
+          case 'ArrowRight':
+            this.input = event.key;
+            break;
+        }
+    }
+    handleKeyUp(event) {
+        event.preventDefault();
+        switch(event.key) {
+            case 'a':
+            case 'd':
+            case 'ArrowLeft':
+            case 'ArrowRight':
+                if (event.key === this.input)
+                    this.input = null;
+                break;
+        }
     }
     loop() {
         this.update();
@@ -45,6 +75,7 @@ export default class Game {
         this.rows.forEach(row => {
             row.update();
         })
+        this.paddle.update(this.input);
     }
     render() {
         // create the background

@@ -6,8 +6,19 @@ export default class Paddle {
         this.length = 32;
         this.render = this.render.bind(this);
     }
-    update() {
-
+    update(input) {
+        switch (input) {
+            case 'a':
+            case 'ArrowLeft':
+                if (this.leftX > 0)
+                    this.leftX--;
+                break;
+            case 'd':
+            case 'ArrowRight':
+                if (this.leftX + this.length < 112)
+                    this.leftX++;
+                break;
+        }
     }
     render(ctx) {
         ctx.save();
