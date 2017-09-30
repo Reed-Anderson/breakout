@@ -16,5 +16,11 @@
   "bugs": {
     "url": "https://github.com/Reed-Anderson/breakout/issues"
   },
-  "homepage": "https://github.com/Reed-Anderson/breakout#readme"
+  "homepage": "https://github.com/Reed-Anderson/breakout#readme",
+  "devDependencies": {
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
+    "react-scripts": "^1.0.13",
+    "webpack": "^3.6.0"
+  }
 }
