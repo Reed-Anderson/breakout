@@ -17,19 +17,22 @@ export default class Ball {
             var paddlePosition = this.x - paddle.leftX;
             if (paddlePosition >= 0 && paddlePosition <= paddle.length) {
                 this.yDirection = -1;
-                var paddleSegment = Math.ceil( paddlePosition / paddle.length * 6);
-                this.xDirection = paddleSegment <= 3 ? (paddleSegment - 4) * .5 : (paddleSegment - 3) * .5;
+                this.xDirection = ((paddlePosition / paddle.length) - .5) * 3;
+                if (this.xDirection >= 0 && this.xDirection < .5) this.xDirection = .5
+                if (this.xDirection < 0 && this.xDirection > -.5) this.xDirection = -.5
             } else {
                 this.y = 500;
                 this.x = 500;
                 this.xDirection = 0;
+                this.yDirection = 0;
+                setTimeout(function() { this.yDirection = 1}.bind(this), 800);
                 loseLifeFunction();
             }
         }
     }
     checkBrickCollision(rows) {
-        if (this.y - 10 > 288) return 0;
-        var rowNumber = Math.floor((this.y - 10) / 36);
+        if (this.y - 10 >= 360) return 0;
+        var rowNumber = Math.floor((this.y - 10 - 72) / 36);
         var brickNumber = Math.floor(this.x / 72);
         if (rows[rowNumber] && rows[rowNumber].update(brickNumber)) {
             this.yDirection = 1;
