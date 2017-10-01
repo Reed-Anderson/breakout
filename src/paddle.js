@@ -1,29 +1,29 @@
-// padle.js
+// paddle.js
 
 export default class Paddle {
     constructor() {
-        this.leftX = 40;
-        this.length = 32;
+        this.leftX = 340;
+        this.length = 320;
         this.render = this.render.bind(this);
     }
-    update(input) {
+    update(input, speed) {
         switch (input) {
             case 'a':
             case 'ArrowLeft':
                 if (this.leftX > 0)
-                    this.leftX--;
+                    this.leftX-= speed;
                 break;
             case 'd':
             case 'ArrowRight':
-                if (this.leftX + this.length < 112)
-                    this.leftX++;
+                if (this.leftX + this.length < 1000)
+                    this.leftX += speed;
                 break;
         }
     }
     render(ctx) {
         ctx.save();
         ctx.fillStyle = 'red';
-        ctx.fillRect(this.leftX, 110, this.length, 2);
+        ctx.fillRect(this.leftX, 980, this.length, 20);
         ctx.restore();
     }
 }
