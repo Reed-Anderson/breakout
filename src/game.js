@@ -49,7 +49,7 @@ export default class Game {
         this.checkBallCollisions = this.checkBallCollisions.bind(this);
         
         // set game speed
-        this.gameSpeed = 5;
+        this.gameSpeed = 15;
         this.interval = setInterval(this.loop, 17); // ~60 fps
     }
     handleKeyDown(event) {
@@ -81,6 +81,7 @@ export default class Game {
     }
     checkBallCollisions() {
         this.ball.checkPaddleCollision(this.paddle);
+        this.ball.checkBrickCollision(this.rows);
     }
     update() {
         this.rows.forEach(row => {

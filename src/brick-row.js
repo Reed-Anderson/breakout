@@ -24,28 +24,33 @@ export default class BrickRow {
         this.update = this.update.bind(this);
         this.render = this.render.bind(this);
     }
-    update() {
-
+    update(brickNumber) {
+        var rv = false;
+        if (this.bricks[brickNumber] != null) rv = true;
+        this.bricks[brickNumber] = null;
+        return rv;
     }
     render(ctx) {
         this.bricks.forEach((brick, i) => {
-            ctx.save();
-            switch(this.color) {
-                case 0:
-                    ctx.fillStyle = 'red';
-                    break;
-                case 1:
-                    ctx.fillStyle = 'orange';
-                    break;
-                case 2:
-                    ctx.fillStyle = 'green';
-                    break;
-                default:
-                    ctx.fillStyle = 'yellow';
-                    break;
+            if (this.bricks[i] != null) {
+                ctx.save();
+                switch(this.color) {
+                    case 0:
+                        ctx.fillStyle = 'red';
+                        break;
+                    case 1:
+                        ctx.fillStyle = 'orange';
+                        break;
+                    case 2:
+                        ctx.fillStyle = 'green';
+                        break;
+                    default:
+                        ctx.fillStyle = 'yellow';
+                        break;
+                }
+                ctx.fillRect(i*36, this.rowNumber*36, 36, 36)
+                ctx.restore();
             }
-            ctx.fillRect(i*36, this.rowNumber*36, 36, 36)
-            ctx.restore();
         })
     }
 }
