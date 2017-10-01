@@ -12,23 +12,30 @@ export default class Ball {
         this.checkPaddleCollision = this.checkPaddleCollision.bind(this);
         this.checkBrickCollision = this.checkBrickCollision.bind(this);
     }
-    checkPaddleCollision(paddle) {
+    checkPaddleCollision(paddle, loseLifeFunction) {
         if (this.y + 10 >= 980) {
             var paddlePosition = this.x - paddle.leftX;
             if (paddlePosition >= 0 && paddlePosition <= paddle.length) {
                 this.yDirection = -1;
                 var paddleSegment = Math.ceil( paddlePosition / paddle.length * 6);
                 this.xDirection = paddleSegment <= 3 ? (paddleSegment - 4) * .5 : (paddleSegment - 3) * .5;
+            } else {
+                this.y = 500;
+                this.x = 500;
+                this.xDirection = 0;
+                loseLifeFunction();
             }
         }
     }
     checkBrickCollision(rows) {
-        if (this.y - 10 > 288) return;
+        if (this.y - 10 > 288) return 0;
         var rowNumber = Math.floor((this.y - 10) / 36);
-        console.log(rows, rowNumber);
-        var brickNumber = Math.floor(this.x / 36);
+        var brickNumber = Math.floor(this.x / 72);
         if (rows[rowNumber] && rows[rowNumber].update(brickNumber)) {
             this.yDirection = 1;
+            return Math.floor((7 - rowNumber) / 2) * 2 + 1
+        } else {
+            return 0;
         }
     }
     update(speed) {

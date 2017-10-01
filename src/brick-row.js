@@ -48,7 +48,7 @@ export default class BrickRow {
                         ctx.fillStyle = 'yellow';
                         break;
                 }
-                ctx.fillRect(i*36, this.rowNumber*36, 36, 36)
+                ctx.fillRect(i*72, this.rowNumber*36, 72, 36)
                 ctx.restore();
             }
         })

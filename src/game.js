@@ -13,7 +13,7 @@ export default class Game {
         // create the rows
         this.rows = [];
         for (var i = 0; i < 8; i++) {
-            this.rows.push(new BrickRow(i, 28, Math.floor(i/2)))
+            this.rows.push(new BrickRow(i, 14, Math.floor(i/2)))
         }
 
         // create the paddle
@@ -47,9 +47,13 @@ export default class Game {
         this.render = this.render.bind(this);
         this.loop = this.loop.bind(this);
         this.checkBallCollisions = this.checkBallCollisions.bind(this);
+        this.loseLife = this.loseLife.bind(this);
         
-        // set game speed
+        // set game variables
+        this.score = 0;
+        this.lives = 3;
         this.gameSpeed = 15;
+
         this.interval = setInterval(this.loop, 17); // ~60 fps
     }
     handleKeyDown(event) {
@@ -75,13 +79,31 @@ export default class Game {
                 break;
         }
     }
+    drawHeart(ctx, x, y) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(x + 75, y + 40);
+        ctx.bezierCurveTo(x + 75, y + 37,   x + 70,  y + 25,   x + 50,  y + 25);
+        ctx.bezierCurveTo(x + 20, y + 25,   x + 20,  y + 62.5, x + 20,  y + 62.5);
+        ctx.bezierCurveTo(x + 20, y + 80,   x + 40,  y + 102,  x + 75,  y + 120);
+        ctx.bezierCurveTo(x + 110,y + 102,  x + 130, y + 80,   x + 130, y + 62.5);
+        ctx.bezierCurveTo(x + 130,y + 62.5, x + 130, y + 25,   x + 100, y + 25);
+        ctx.bezierCurveTo(x + 85, y + 25,   x + 75,  y + 37,   x + 75,  y + 40);
+        ctx.fill();
+        ctx.restore();
+    }
+    checkBallCollisions() {
+        this.ball.checkPaddleCollision(this.paddle, this.loseLife);
+        this.score += this.ball.checkBrickCollision(this.rows);
+    }
+    loseLife() {
+        if (--this.lives === 0) {
+            window.location = window.location;
+        }
+    }
     loop() {
         this.update();
         this.render();
-    }
-    checkBallCollisions() {
-        this.ball.checkPaddleCollision(this.paddle);
-        this.ball.checkBrickCollision(this.rows);
     }
     update() {
         this.rows.forEach(row => {
@@ -95,12 +117,21 @@ export default class Game {
         // create the background
         this.backBufferContext.fillStyle = '#333';
         this.backBufferContext.fillRect(0,0,1000,1000);
+        // render game vars
+        this.backBufferContext.fillStyle = 'white';
+        this.backBufferContext.font = "40px Verdana";
+        this.backBufferContext.fillText(this.score + ' Points', 10, 950);
+        this.drawHeart(this.backBufferContext, 850, 850);
+        this.backBufferContext.fillStyle = 'red';
+        this.backBufferContext.fillText(this.lives, 912, 935);
         // render the rows
         this.rows.forEach(row => {
             row.render(this.backBufferContext);
         })
+        // render the paddle
         this.paddle.render(this.backBufferContext);
+        // render the ball
         this.ball.render(this.backBufferContext);
-        this.screenBufferContext.drawImage(this.backBufferCanvas, 0, 0)
+        this.screenBufferContext.drawImage(this.backBufferCanvas, 0, 0);
     }
 }
