@@ -31,6 +31,7 @@ export default class Game {
 
         // Create the screen buffer canvas
         this.screenBufferCanvas = document.createElement('canvas');
+        this.screenBufferCanvas.id = 'domCanvas';
         this.screenBufferCanvas.width = 1000;
         this.screenBufferCanvas.height = 1000;
         document.body.appendChild(this.screenBufferCanvas);
@@ -50,11 +51,13 @@ export default class Game {
         this.loseLife = this.loseLife.bind(this);
         
         // set game variables
+        this.over = false;
         this.score = 0;
         this.lives = 3;
-        this.gameSpeed = 15;
+        this.gameSpeed = 10;
+        this.secondRows
 
-        this.interval = setInterval(this.loop, 17); // ~60 fps
+        this.interval = setInterval(this.loop, 15);
     }
     handleKeyDown(event) {
         event.preventDefault();
@@ -98,7 +101,7 @@ export default class Game {
     }
     loseLife() {
         if (--this.lives === 0) {
-            window.location = window.location;
+            this.over = true;
         }
     }
     loop() {
@@ -106,32 +109,55 @@ export default class Game {
         this.render();
     }
     update() {
-        this.rows.forEach(row => {
-            row.update();
-        })
-        this.paddle.update(this.input, this.gameSpeed);
-        this.ball.update(this.gameSpeed);
-        this.checkBallCollisions();
+        if (!this.over) {
+            this.rows.forEach(row => {
+                row.update();
+            })
+            this.paddle.update(this.input, this.gameSpeed);
+            this.ball.update(this.gameSpeed);
+            this.checkBallCollisions();
+            if (this.score === 448 && !this.secondRows) {
+                this.rows = [];
+                for (var i = 0; i < 8; i++) {
+                    this.rows.push(new BrickRow(i, 14, Math.floor(i/2)))
+                }
+                this.ball.reset();
+                this.secondRows = true;
+            }
+        }
     }
     render() {
-        // create the background
-        this.backBufferContext.fillStyle = '#333';
-        this.backBufferContext.fillRect(0,0,1000,1000);
-        // render game vars
-        this.backBufferContext.fillStyle = 'white';
-        this.backBufferContext.font = "40px Verdana";
-        this.backBufferContext.fillText(this.score + ' Points', 10, 950);
-        this.drawHeart(this.backBufferContext, 850, 850);
-        this.backBufferContext.fillStyle = 'red';
-        this.backBufferContext.fillText(this.lives, 912, 935);
-        // render the rows
-        this.rows.forEach(row => {
-            row.render(this.backBufferContext);
-        })
-        // render the paddle
-        this.paddle.render(this.backBufferContext);
-        // render the ball
-        this.ball.render(this.backBufferContext);
+        if (!this.over) {
+            // create the background
+            this.backBufferContext.fillStyle = '#333';
+            this.backBufferContext.fillRect(0,0,1000,1000);
+            // render game vars
+            this.backBufferContext.fillStyle = 'white';
+            this.backBufferContext.font = "40px Verdana";
+            this.backBufferContext.fillText(this.score + ' Points', 10, 950);
+            this.drawHeart(this.backBufferContext, 850, 850);
+            this.backBufferContext.fillStyle = 'red';
+            this.backBufferContext.fillText(this.lives, 912, 935);
+            // render the rows
+            this.rows.forEach(row => {
+                row.render(this.backBufferContext);
+            })
+            // render the paddle
+            this.paddle.render(this.backBufferContext);
+            // render the ball
+            this.ball.render(this.backBufferContext);
+        } else {
+            this.backBufferContext.fillStyle = '#333';
+            this.backBufferContext.fillRect(0,0,1000,1000);
+            this.backBufferContext.fillStyle = 'white';
+            this.backBufferContext.font = "40px Verdana";
+            this.backBufferContext.fillText('Game Over. Total Points - ' + this.score, 200, 400);
+            this.backBufferContext.fillText('Click here to play again.', 240, 515);
+            var canvas = document.getElementById('domCanvas');
+            canvas.onclick = function() {
+                window.location = window.location;
+            }
+        }
         this.screenBufferContext.drawImage(this.backBufferCanvas, 0, 0);
     }
 }

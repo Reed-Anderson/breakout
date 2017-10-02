@@ -24,6 +24,9 @@ export default class BrickRow {
         this.update = this.update.bind(this);
         this.render = this.render.bind(this);
     }
+    brickExists(brickNumber) {
+        return this.bricks[brickNumber]
+    }
     update(brickNumber) {
         var rv = false;
         if (this.bricks[brickNumber] != null) rv = true;
