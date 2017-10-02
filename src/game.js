@@ -54,7 +54,7 @@ export default class Game {
         this.over = false;
         this.score = 0;
         this.lives = 3;
-        this.gameSpeed = 10;
+        this.gameSpeed = 5;
         this.secondRows = false;
         this.halvedPaddle = false;
         this.bricksDestroyed = 0;
@@ -105,6 +105,16 @@ export default class Game {
         if (pointsAdded) {
             this.score += pointsAdded;
             this.bricksDestroyed++;
+            if (this.bricksDestroyed == 4) this.gameSpeed += 2;
+            if (this.bricksDestroyed == 12) this.gameSpeed += 2;
+            if (!this.orangeContact && pointsAdded === 5) {
+                this.gameSpeed += 2;
+                this.orangeContact = true;
+            }
+            if (!this.redContact && pointsAdded === 7) {
+                this.gameSpeed += 2;
+                this.redContact = true;
+            }
         }
     }
     loseLife() {
