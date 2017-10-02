@@ -42,33 +42,33 @@ export default class Ball {
             var leftPercent = 1 - rightPercent;
 
             // go northwest
-            if (upPercent > .60 && leftPercent > .60
-                && (!rows[rowNumber - 1] || !rows[rowNumber - 1].brickExists(brickNumber))
-                && (!rows[rowNumber].brickExists(brickNumber - 1))) {
+            if (upPercent > .60 && leftPercent > .60 &&
+                ( ((!rows[rowNumber - 1] || !rows[rowNumber - 1].brickExists(brickNumber)) && (!rows[rowNumber].brickExists(brickNumber - 1))) ||
+                  (( rows[rowNumber - 1] &&  rows[rowNumber - 1].brickExists(brickNumber)) && ( rows[rowNumber].brickExists(brickNumber - 1))) )) {
                 this.yDirection = -1;
                 this.xDirection = -Math.abs(this.xDirection);
                 console.log(!rows[rowNumber].brickExists(brickNumber - 1))
             } 
             // go northeast
-            else if (upPercent > .60 && rightPercent > .60 
-                && (!rows[rowNumber - 1] || !rows[rowNumber - 1].brickExists(brickNumber))
-                && (!rows[rowNumber].brickExists(brickNumber + 1))) {
+            else if (upPercent > .60 && rightPercent > .60 &&
+                ( ( (!rows[rowNumber - 1] || !rows[rowNumber - 1].brickExists(brickNumber)) && (!rows[rowNumber].brickExists(brickNumber + 1)) ) ||
+                ( rows[rowNumber - 1] &&  rows[rowNumber - 1].brickExists(brickNumber)) && ( rows[rowNumber].brickExists(brickNumber + 1)) )) {
                 this.yDirection = -1;
                 this.xDirection = Math.abs(this.xDirection);
                 console.log('ne')
             } 
             // go southwest
-            else if (downPercent > .60 && leftPercent > .60 
-                && (!rows[rowNumber + 1] || !rows[rowNumber + 1].brickExists(brickNumber))
-                && (!rows[rowNumber].brickExists(brickNumber - 1))) {
+            else if (downPercent > .60 && leftPercent > .60 &&
+                ( ( (!rows[rowNumber + 1] || !rows[rowNumber + 1].brickExists(brickNumber)) && (!rows[rowNumber].brickExists(brickNumber - 1)) ) ||
+                    ( rows[rowNumber + 1] &&  rows[rowNumber + 1].brickExists(brickNumber)) && ( rows[rowNumber].brickExists(brickNumber - 1)) )) {
                 this.yDirection = 1;
                 this.xDirection = -Math.abs(this.xDirection);
                 console.log('sw')
             }  
             // go southeast
-            else if (downPercent > .60 && rightPercent > .60 
-                && (!rows[rowNumber + 1] || !rows[rowNumber + 1].brickExists(brickNumber))
-                && (!rows[rowNumber].brickExists(brickNumber + 1))) {
+            else if (downPercent > .60 && rightPercent > .60 &&
+                ( ( (!rows[rowNumber + 1] || !rows[rowNumber + 1].brickExists(brickNumber)) && (!rows[rowNumber].brickExists(brickNumber + 1)) ) ||
+                ( rows[rowNumber + 1] &&  rows[rowNumber + 1].brickExists(brickNumber)) && ( rows[rowNumber].brickExists(brickNumber + 1)) )) {
                 this.yDirection = 1;
                 this.xDirection = Math.abs(this.xDirection);
                 console.log('se')
