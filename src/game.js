@@ -55,7 +55,11 @@ export default class Game {
         this.score = 0;
         this.lives = 3;
         this.gameSpeed = 10;
-        this.secondRows
+        this.secondRows = false;
+        this.halvedPaddle = false;
+        this.bricksDestroyed = 0;
+        this.orangeContact = false;
+        this.redContact = false;
 
         this.interval = setInterval(this.loop, 15);
     }
@@ -97,7 +101,11 @@ export default class Game {
     }
     checkBallCollisions() {
         this.ball.checkPaddleCollision(this.paddle, this.loseLife);
-        this.score += this.ball.checkBrickCollision(this.rows);
+        var pointsAdded = this.ball.checkBrickCollision(this.rows);
+        if (pointsAdded) {
+            this.score += pointsAdded;
+            this.bricksDestroyed++;
+        }
     }
     loseLife() {
         if (--this.lives === 0) {
@@ -114,7 +122,10 @@ export default class Game {
                 row.update();
             })
             this.paddle.update(this.input, this.gameSpeed);
-            this.ball.update(this.gameSpeed);
+            if (this.ball.update(this.gameSpeed) && !this.halvedPaddle) {
+                this.paddle.half();
+                this.halvedPaddle = true;
+            }
             this.checkBallCollisions();
             if (this.score === 448 && !this.secondRows) {
                 this.rows = [];

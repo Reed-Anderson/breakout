@@ -103,7 +103,11 @@ export default class Ball {
         this.x += speed * this.xDirection
         if (this.x - 10 <= 0) this.xDirection = Math.abs(this.xDirection);
         if (this.x + 10 >= 1000) this.xDirection = -Math.abs(this.xDirection);
-        if (this.y - 10 <= 0) this.yDirection = 1;
+        if (this.y - 10 <= 0) {
+            this.yDirection = 1;
+            return true;
+        }
+        return false;
     }
     render(ctx) {
         ctx.save();
