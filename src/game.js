@@ -3,6 +3,8 @@ import BrickRow from './brick-row';
 import Paddle from './paddle'
 import Ball from './ball'
 import './game.css'
+import BrickSound from './Brick.wav'
+import PaddleWallSound from './PaddleOrWall.wav'
 
 /**
  * @class Game
@@ -49,6 +51,7 @@ export default class Game {
         this.loop = this.loop.bind(this);
         this.checkBallCollisions = this.checkBallCollisions.bind(this);
         this.loseLife = this.loseLife.bind(this);
+        this.playBrickSound = this.playBrickSound.bind(this);
         
         // set game variables
         this.over = false;
@@ -100,9 +103,12 @@ export default class Game {
         ctx.restore();
     }
     checkBallCollisions() {
-        this.ball.checkPaddleCollision(this.paddle, this.loseLife);
+        if (this.ball.checkPaddleCollision(this.paddle, this.loseLife)) {
+            this.playBallBounceSound();
+        }
         var pointsAdded = this.ball.checkBrickCollision(this.rows);
         if (pointsAdded) {
+            this.playBrickSound();
             this.score += pointsAdded;
             this.bricksDestroyed++;
             if (this.bricksDestroyed == 4) this.gameSpeed += 2;
@@ -132,7 +138,7 @@ export default class Game {
                 row.update();
             })
             this.paddle.update(this.input, this.gameSpeed);
-            if (this.ball.update(this.gameSpeed) && !this.halvedPaddle) {
+            if (this.ball.update(this.gameSpeed, this.playBallBounceSound) && !this.halvedPaddle) {
                 this.paddle.half();
                 this.halvedPaddle = true;
             }
@@ -180,5 +186,13 @@ export default class Game {
             }
         }
         this.screenBufferContext.drawImage(this.backBufferCanvas, 0, 0);
+    }
+    playBrickSound() {
+        var audio = new Audio(BrickSound) // document.createElement('audio');
+        audio.play();
+    }
+    playBallBounceSound() {
+        var audio = new Audio(PaddleWallSound) // document.createElement('audio');
+        audio.play();
     }
 }

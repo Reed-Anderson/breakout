@@ -21,11 +21,14 @@ export default class Ball {
                 this.xDirection = ((paddlePosition / paddle.length) - .5) * 3;
                 if (this.xDirection >= 0 && this.xDirection < .5) this.xDirection = .5
                 if (this.xDirection < 0 && this.xDirection > -.5) this.xDirection = -.5
+                return true;
             } else {
                 this.reset();
                 loseLifeFunction();
+                return false;
             }
         }
+        return false;
     }
     checkBrickCollision(rows) {
         if (this.y >= 360) return 0;
@@ -45,9 +48,10 @@ export default class Ball {
             if (upPercent > .60 && leftPercent > .60 &&
                 ( ((!rows[rowNumber - 1] || !rows[rowNumber - 1].brickExists(brickNumber)) && (!rows[rowNumber].brickExists(brickNumber - 1))) ||
                   (( rows[rowNumber - 1] &&  rows[rowNumber - 1].brickExists(brickNumber)) && ( rows[rowNumber].brickExists(brickNumber - 1))) )) {
+                console.log(((!rows[rowNumber - 1] || !rows[rowNumber - 1].brickExists(brickNumber)) && (!rows[rowNumber].brickExists(brickNumber - 1))));
+                console.log((( rows[rowNumber - 1] &&  rows[rowNumber - 1].brickExists(brickNumber)) && ( rows[rowNumber].brickExists(brickNumber - 1))));
                 this.yDirection = -1;
                 this.xDirection = -Math.abs(this.xDirection);
-                console.log(!rows[rowNumber].brickExists(brickNumber - 1))
             } 
             // go northeast
             else if (upPercent > .60 && rightPercent > .60 &&
@@ -55,7 +59,6 @@ export default class Ball {
                 ( rows[rowNumber - 1] &&  rows[rowNumber - 1].brickExists(brickNumber)) && ( rows[rowNumber].brickExists(brickNumber + 1)) )) {
                 this.yDirection = -1;
                 this.xDirection = Math.abs(this.xDirection);
-                console.log('ne')
             } 
             // go southwest
             else if (downPercent > .60 && leftPercent > .60 &&
@@ -63,7 +66,6 @@ export default class Ball {
                     ( rows[rowNumber + 1] &&  rows[rowNumber + 1].brickExists(brickNumber)) && ( rows[rowNumber].brickExists(brickNumber - 1)) )) {
                 this.yDirection = 1;
                 this.xDirection = -Math.abs(this.xDirection);
-                console.log('sw')
             }  
             // go southeast
             else if (downPercent > .60 && rightPercent > .60 &&
@@ -71,7 +73,6 @@ export default class Ball {
                 ( rows[rowNumber + 1] &&  rows[rowNumber + 1].brickExists(brickNumber)) && ( rows[rowNumber].brickExists(brickNumber + 1)) )) {
                 this.yDirection = 1;
                 this.xDirection = Math.abs(this.xDirection);
-                console.log('se')
             }
             // go south
             else if (downPercent > .60 && (!rows[rowNumber + 1] || !rows[rowNumber + 1].brickExists(brickNumber)))
@@ -98,13 +99,20 @@ export default class Ball {
         this.yDirection = 0;
         setTimeout(function() { this.yDirection = 1}.bind(this), 1500);
     }
-    update(speed) {
+    update(speed, soundFunction) {
         this.y += speed * this.yDirection;
         this.x += speed * this.xDirection
-        if (this.x - 10 <= 0) this.xDirection = Math.abs(this.xDirection);
-        if (this.x + 10 >= 1000) this.xDirection = -Math.abs(this.xDirection);
+        if (this.x - 10 <= 0) {
+            this.xDirection = Math.abs(this.xDirection);
+            soundFunction();
+        }
+        if (this.x + 10 >= 1000) {
+            this.xDirection = -Math.abs(this.xDirection);
+            soundFunction();
+        }
         if (this.y - 10 <= 0) {
             this.yDirection = 1;
+            soundFunction();
             return true;
         }
         return false;
